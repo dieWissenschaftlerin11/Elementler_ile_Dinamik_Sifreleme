@@ -1,0 +1,477 @@
+#Modüller
+import time
+import sys
+import collections
+from mendeleev import element
+from collections import Counter
+
+#Tanımlamalar
+upperVowels=["A","E","I","İ","O","Ö","U","Ü"] #(mod 8)
+lowerVowels=["a","e","ı","i","o","ö","u","ü"] #(mod 8)
+upperConsons=["B","C","Ç","D","F","G","Ğ","H","J","K","L","M","N","P","R","S","Ş","T","V","Y","Z"] #(mod 21)
+lowerConsons=["b","c","ç","d","f","g","ğ","h","j","k","l","m","n","p","r","s","ş","t","v","y","z"] #(mod 21)
+nums=["0","1","2","3","4","5","6","7","8","9"] #(mod 10)
+signs=["+","x","÷","=","/","\\","$","€","£","@","*","!","#",":",";","&","-","(",")","_","'","\"",".",",","?"] #(mod 26)
+
+triangularNumbers=[1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66]
+index1=[]
+index2=[]
+index3=[]
+
+encrypt1=[]
+encrypt2=[]
+encrypt3=[]
+
+charges=[]
+
+def DigitTheKey(key):
+    global num1
+    global num2
+    global num3
+
+    num1=key//10000
+    num2=(key%10000)//100
+    num3=key%100
+
+    return num1
+    return num2
+    return num3
+
+def DigitTheNum(x):#(+)
+    global d1
+    global d2
+    global d3
+    global d4
+    global d5
+    global d6
+    
+    d1=x//100000         
+    d2=(x%100000)//10000 
+    d3=(x%10000)//1000
+    d4=(x%1000)//100
+    d5=(x%100)//10
+    d6=x%10
+
+    return d1
+    return d2
+    return d3
+    return d4
+    return d5
+    return d6
+
+while True: #(+)
+    answer=input("""Hangi işlemi yapmak istiyorsunuz?\n
+ 1. ŞİFRELEME (Normal metni şifrelenmiş metne çevirme)
+ 2. DEŞİFRELEME (Şifrelenmiş metni normal metne çevirme)\n
+ Lütfen yapmak istediğiniz işlemin başındaki numarayı yazınız.\n
+Seçiminiz? (1/2) (Çıkmak için q ve ardından ENTER'a basınız):\t""")
+
+    if answer!="1" and answer!="2" and answer!="q" and answer!="Q": 
+        print("\nLütfen geçerli bir seçim yapınız!\n")
+
+    else:
+        break
+
+if answer=="1": #Şifreleme
+    
+    msg=input("\nMetni giriniz:\t")
+
+    while True:
+        keyNo1=input("Anahtar sayıyı giriniz:\t")
+        keyNo=int(keyNo1)
+
+        DigitTheNum(keyNo)
+        
+        if len(keyNo1)!=6:
+            print("\nAnahtar sayı 6 basamaklı olmalıdır!\n")
+
+        elif d1==d2 or d1==d3 or d1==d4 or d1==d5 or d1==d6 or d2==d3 or d2==d4 or d2==d5 or d2==d6 or d3==d4 or d3==d5 or d3==d6 or d4==d5 or d4==d6 or d5==d6:
+            print("\nAnahtar sayının rakamları birbirinden farklı olmalıdır!\n")
+        
+        elif d1<1 or d1>6 or d2<1 or d2>6 or d3<1 or d3>6 or d4<1 or d4>6 or d5<1 or d5>6 or d6<1 or d6>6:
+            print("\nAnahtar sayı 1,2,3,4,5 ve 6 rakamlarından oluşmalıdır!\n")
+            
+        else:
+            break
+    #1.Şifreleme Aşaması Başlangıcı  
+    time1=time.localtime()
+    year=time1.tm_year
+    month=time1.tm_mon
+    day=time1.tm_mday
+    hour=time1.tm_hour
+    minute=time1.tm_min
+    second=time1.tm_sec
+
+    if d1==1: 
+        shift=year%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d1==2:
+        shift=year%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d1==3:
+        shift=year%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d1==4:
+        shift=year%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+
+    elif d1==5:
+        shift=year%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=year%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+    
+    if d2==1:
+        shift=month%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d2==2:
+        shift=month%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d2==3:
+        shift=month%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d2==4:
+        shift=month%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+        
+
+    elif d2==5:
+        shift=month%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=month%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+
+    if d3==1:
+        shift=day%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d3==2:
+        shift=day%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d3==3:
+        shift=day%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d3==4:
+        shift=day%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+
+    elif d3==5:
+        shift=day%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=day%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+
+    if d4==1:
+        shift=hour%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d4==2:
+        shift=hour%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d4==3:
+        shift=hour%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d4==4:
+        shift=hour%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+
+    elif d4==5:
+        shift=hour%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=hour%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+
+    if d5==1:
+        shift=minute%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d5==2:
+        shift=minute%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d5==3:
+        shift=minute%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d5==4:
+        shift=minute%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+
+    elif d5==5:
+        shift=minute%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=minute%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+
+    if d6==1:
+        shift=second%8
+        #upperVowels + shift
+        newUpperVowels1=collections.deque(upperVowels)
+        newUpperVowels1.rotate(-shift)
+        newUpperVowels=list(newUpperVowels1)
+        
+    elif d6==2:
+        shift=second%8
+        #lowerVowels + shift
+        newLowerVowels1=collections.deque(lowerVowels)
+        newLowerVowels1.rotate(-shift)
+        newLowerVowels=list(newLowerVowels1)
+        
+    elif d6==3:
+        shift=second%21
+        #upperConsons + shift
+        newUpperConsons1=collections.deque(upperConsons)
+        newUpperConsons1.rotate(-shift)
+        newUpperConsons=list(newUpperConsons1)
+        
+    elif d6==4:
+        shift=second%21
+        #lowerConsons + shift
+        newLowerConsons1=collections.deque(lowerConsons)
+        newLowerConsons1.rotate(-shift)
+        newLowerConsons=list(newLowerConsons1)
+        
+
+    elif d6==5:
+        shift=second%10
+        #nums + shift
+        newNums1=collections.deque(nums)
+        newNums1.rotate(-shift)
+        newNums=list(newNums1)
+        
+    else:
+        shift=second%26
+        #signs + shift
+        newSigns1=collections.deque(signs)
+        newSigns1.rotate(-shift)
+        newSigns=list(newSigns1)
+
+    for letter in msg:
+
+        if letter in upperVowels:
+            encrypt1.append(newUpperVowels[upperVowels.index(letter)])
+            
+        elif letter in lowerVowels:
+            encrypt1.append(newLowerVowels[lowerVowels.index(letter)])
+            
+
+        elif letter in upperConsons:
+            encrypt1.append(newUpperConsons[upperConsons.index(letter)])
+            
+
+        elif letter in lowerConsons:
+            encrypt1.append(newLowerConsons[lowerConsons.index(letter)])
+
+        elif letter in nums:
+            encrypt1.append(newNums[nums.index(letter)])
+
+        elif letter in signs:
+            encrypt1.append(newSigns[signs.index(letter)])
+        
+        else:
+            encrypt1.append("(NULL)")
+
+        #1.Şifreleme Aşaması Sonu(+)
+
+    #2.Şifreleme Aşaması Başlangıcı
+    i=0
+    for j in encrypt1:
+        encrypt1[i]=ord(encrypt1[i])
+        i+=1
+
+    i=0
+    for j in encrypt1:
+        encrypt1[i]=(encrypt1[i]%103)+1
+        i+=1
+
+    for j in encrypt1:
+        e=element(j)
+        w=round(e.atomic_weight)
+
+        for ir in e.ionic_radii:
+            charges.append(ir.charge)
+
+        c=Counter(charges).most_common(1)[0][0]
+
+        encrypt2.append(w)
+        encrypt2.append(c)
+    #2.Şifreleme Aşaması Sonu(+)
+
+    #3.Şifreleme Aşaması Başlangıcı
+    for i in range(0,len(encrypt2),2):
+        if encrypt2[i]%128<=31 and encrypt2[i]%128>=0:
+            encrypt3.append(encrypt2[i]%128)
+
+        elif encrypt2[i]%128==127:
+            encrypt3.append("Γ")
+
+        else:
+            encrypt3.append(chr(encrypt2[i]%128))
+
+    for i in range(1,len(encrypt2),2):
+        if encrypt2[i]<0:
+            encrypt3.insert(i,"β{}".format(encrypt2[i]))
+
+        elif encrypt2[i]==0:
+            encrypt3.insert(i,"µ")
+
+        else:
+            encrypt3.insert(i,"α{}".format(encrypt2[i]))
+
+    #3.Şifreleme Aşaması Sonu(+)
+
+    #Anahtar Şifreleme Aşaması Başlangıcı
+    DigitTheKey(keyNo)
+    
+    while(num1!=0):
+
+        for i in range(10,-1,-1):
+            if triangularNumbers[i]<=num1:
+                index1.append(i)
+                num1-=triangularNumbers[i]
+                i-=1
+        
+        if num1!=0:
+            index1.append("(00)")
+            
+            for i in range(0,11,1):
+                if triangularNumbers[i]<=num1:
+                    index1.append(i)
+                    num1-=triangularNumbers[i]
+                    i+=1
+    
+    #Anahtar Şifreleme Aşaması TAMAMLANMADI!
+
+                    
+    #Şifrelenmiş Metnin Ekrana Yazdırılması
+    print("\nŞifrelenmiş metin:\t{}\n\nAnahtar:\t{}\n".format("".join(str(i) for i in encrypt3),keyNo))
+    print("\n\nŞifrelenen veri grubu adı : ZAMAN\nŞifrelenme tarihi: {}.{}.{}   {}:{}:{}\n".format(day,month,year,hour,minute,second))
+    time.sleep(5)
+            
+elif answer=="2": #Deşifreleme
+    
+    msg=input("\nMetni giriniz:\t")
+    keyNo=int(input("Anahtar sayıyı giriniz:\t"))
+
+    
+else: #Çıkış
+    print("\nÇıkılıyor...")
+    time.sleep(2)
+    sys.exit()
+    
+
