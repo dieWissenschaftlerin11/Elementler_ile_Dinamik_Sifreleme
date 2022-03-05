@@ -1,56 +1,75 @@
-#Modüller
+# Modüller
 import time
 import sys
+import os
 import collections
-from mendeleev import element
-from collections import Counter
+import random
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 
-#Tanımlamalar
-upperVowels=["A","E","I","İ","O","Ö","U","Ü"] #(mod 8)
-lowerVowels=["a","e","ı","i","o","ö","u","ü"] #(mod 8)
-upperConsons=["B","C","Ç","D","F","G","Ğ","H","J","K","L","M","N","P","R","S","Ş","T","V","Y","Z"] #(mod 21)
-lowerConsons=["b","c","ç","d","f","g","ğ","h","j","k","l","m","n","p","r","s","ş","t","v","y","z"] #(mod 21)
-nums=["0","1","2","3","4","5","6","7","8","9"] #(mod 10)
-signs=["+","x","÷","=","/","\\","$","€","£","@","*","!","#",":",";","&","-","(",")","_","'","\"",".",",","?"] #(mod 26)
+# Tanımlamalar
 
-triangularNumbers=[1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66]
-index1=[]
-index2=[]
-index3=[]
+upperVowels = ["A", "E", "I", "İ", "O", "Ö", "U", "Ü"]  # (mod 8)
+lowerVowels = ["a", "e", "ı", "i", "o", "ö", "u", "ü"]  # (mod 8)
+upperConsons = ["B", "C", "Ç", "D", "F", "G", "Ğ", "H", "J", "K", "L", "M", "N", "P", "R", "S", "Ş", "T", "V", "Y",
+                "Z"]  # (mod 21)
+lowerConsons = ["b", "c", "ç", "d", "f", "g", "ğ", "h", "j", "k", "l", "m", "n", "p", "r", "s", "ş", "t", "v", "y",
+                "z"]  # (mod 21)
+nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]  # (mod 10)
+signs = ["+", "x", "÷", "=", "%", "/", "\\", "$", "ƒ", "£", "@", "*", "!", "#", ":", ";", "&", "-", "(", ")", "_", "'", "\"",
+         ".", ",", "?"]  # (mod 26)
 
-encrypt1=[]
-encrypt2=[]
-encrypt3=[]
+newCharGroups = []
 
-charges=[]
+charGroups = [upperVowels, lowerVowels, upperConsons, lowerConsons, nums, signs]
+
+charGroups = enumerate(charGroups,1)
+charGroups = list(charGroups)
+
+currency = []
+currency1 = []
+currency3 = []
+
+triangularNumbers = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66]
+num = 0
+encryptedKey = []
+encryptedKey1 = []
+encryptedKey2 = []
+encryptedKey3 = []
+
+encrypt1 = []
+encrypt2 = []
 
 def DigitTheKey(key):
     global num1
     global num2
     global num3
 
-    num1=key//10000
-    num2=(key%10000)//100
-    num3=key%100
+    num1 = key // 10000
+    num2 = (key % 10000) // 100
+    num3 = key % 100
 
     return num1
     return num2
     return num3
 
-def DigitTheNum(x):#(+)
+
+def DigitTheNum(x):  # (+)
     global d1
     global d2
     global d3
     global d4
     global d5
     global d6
-    
-    d1=x//100000         
-    d2=(x%100000)//10000 
-    d3=(x%10000)//1000
-    d4=(x%1000)//100
-    d5=(x%100)//10
-    d6=x%10
+
+    d1 = x // 100000
+    d2 = (x % 100000) // 10000
+    d3 = (x % 10000) // 1000
+    d4 = (x % 1000) // 100
+    d5 = (x % 100) // 10
+    d6 = x % 10
 
     return d1
     return d2
@@ -59,419 +78,1058 @@ def DigitTheNum(x):#(+)
     return d5
     return d6
 
-while True: #(+)
-    answer=input("""Hangi işlemi yapmak istiyorsunuz?\n
+def DigitTheCurency(currency):
+    global a1
+    global a2
+    global a3
+    global a4
+    global a5
+    global a6
+
+    a1 = currency // 10000000000
+    a2 = (currency % 10000000000) // 100000000
+    a3 = (currency % 100000000) // 1000000
+    a4 = (currency % 1000000) // 10000
+    a5 = (currency % 10000) // 100
+    a6 = currency % 100
+
+    return a1, a2, a3, a4, a5, a6
+
+def TakeADynVariable(): #Parametreler 1,2,3 şeklinde numaralandırılabilir!!!
+    indexx = random.randint(1,6)
+    
+    if indexx == 1:
+        global year
+        global month
+        global day
+        global hour
+        global minute
+        global second
+        global varType
+
+        time1 = time.localtime()
+        year = time1.tm_year
+        month = time1.tm_mon
+        day = time1.tm_mday
+        hour = time1.tm_hour
+        minute = time1.tm_min
+        second = time1.tm_sec
+
+        l = [year, month, day, hour, minute, second]
+        l = enumerate(l,1)
+        l = list(l)
+
+        varType = "ZAMAN"
+        return l
+
+    elif indexx == 2: #(?)
+        global temperature
+        global moisture
+        global pressure
+        global height
+        global windSpeed
+
+        city = input("\nBulunduğunuz ili giriniz:\t")
+        state = input("\nBulunduğunuz ilçeyi giriniz:\t")
+
+        temperature1 = []
+        moisture1 = []
+        windSpeed1 = []
+        pressure1 = []
+        height1 = []
+
+        options = Options()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://weather.com/tr-TR/kisisel/bugun/l/TUXX0002:1:TU?Goto=Redirected")
+        time.sleep(15)
+        searchBox = driver.find_element(By.XPATH, '//*[@id="LocationSearch_input"]')
+        searchBox.send_keys("{} {}".format(state, city))
+        driver.implicitly_wait(6)
+        searchBox.send_keys(Keys.ENTER)
+
+        temperature = driver.find_element(By.XPATH, '//*[@id="todayDetails"]/section/div[1]/div[1]/span[1]').text
+        hour = time.localtime().tm_hour
+        moisture = driver.find_element(By.XPATH, '//*[@id="todayDetails"]/section/div[2]/div[3]/div[2]/span').text
+        windSpeed = driver.find_element(By.XPATH, '//*[@id="todayDetails"]/section/div[2]/div[2]/div[2]/span').text
+        pressure = driver.find_element(By.XPATH, '//*[@id="todayDetails"]/section/div[2]/div[5]/div[2]').text
+
+        driver.get("https://www.google.com.tr")
+        time.sleep(6)
+        s = driver.find_element(By.NAME, 'q')
+        s.send_keys("{} {} rakım".format(city, state))
+        s.send_keys(Keys.ENTER)
+        time.sleep(1)
+        height = driver.find_element(By.XPATH,
+                                     '//*[@id="rso"]/div[1]/block-component/div/div[1]/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div[1]').text
+        # Sıcaklık
+        for c in temperature:
+            temperature1.append(c)
+
+        temperature1.pop()
+        temperature = ''.join(str(i) for i in temperature1)
+        temperature = int(temperature)
+
+        # Nem
+        for c in moisture:
+            moisture1.append(c)
+
+        moisture1.pop()
+        moisture = ''.join(str(i) for i in moisture1)
+        moisture = int(moisture)
+
+        # Rüzgar Hızı
+        windSpeed1 = windSpeed.split()
+        windSpeed = windSpeed1[0]
+        windSpeed = int(windSpeed)
+
+        # Basınç
+        pressure1 = pressure.split()
+        pressure = pressure1[0]
+        pressure = float(pressure)
+        pressure = round(pressure)
+
+        # Rakım
+        height1 = height.split()
+        height = height1[0]
+        height = int(height)
+
+        l = [height, temperature, hour, moisture, windSpeed, pressure]
+        l = enumerate(l,1)
+        l = list(l)
+        varType = "GÜNLÜK VE ANLIK HAVA DURUMU"
+
+        return l
+
+    elif indexx == 3:
+        global lat
+        global lng
+        global sunriseHour
+        global sunriseMin
+        global sunsetHour
+        global sunsetMin
+
+        city = input("\nBulunduğunuz ili giriniz:\t")
+
+        options = Options()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://www.itilog.com")
+        time.sleep(6)
+
+        s = driver.find_element(By.ID, 'address')
+        b = driver.find_element(By.ID, 'address_to_map')
+        s.clear()
+        s.send_keys("{}".format(city))
+        b.click()
+        time.sleep(8)
+
+        lat = driver.find_element(By.XPATH, '//*[@id="latitude"]')
+        lng = driver.find_element(By.XPATH, '//*[@id="longitude"]')
+
+        lat = lat.get_attribute('value')
+        lng = lng.get_attribute('value')
+
+        lat = float(lat)
+        lng = float(lng)
+
+        lat = round(lat)
+        lng = round(lng)
+
+        if lng == 0:
+            lng = 1
+
+        driver.get("https://www.google.com.tr")
+        driver.implicitly_wait(4)
+        s = driver.find_element(By.NAME, 'q')
+        s.send_keys("{} gün doğumu".format(city))
+        s.send_keys(Keys.ENTER)
+        driver.implicitly_wait(2)
+        sunrise = driver.find_element(By.XPATH,
+                                      '//*[@id="rso"]/div[1]/div/div/div[1]/w-answer/w-answer-desktop/div[1]').text
+
+        s = driver.find_element(By.XPATH, '//*[@id="tsf"]/div[1]/div[1]/div[2]/div[1]/div/div[2]/input')
+        s.clear()
+        s.send_keys("{} gün batımı".format(city))
+        s.send_keys(Keys.ENTER)
+        time.sleep(1)
+        sunset = driver.find_element(By.XPATH,
+                                     '//*[@id="rso"]/div[1]/div/div/div[1]/w-answer/w-answer-desktop/div[1]').text
+        sunrise = sunrise.replace(':', ' ')
+        sunset = sunset.replace(':', ' ')
+        sunrise = sunrise.split()
+        sunset = sunset.split()
+        sunriseHour = sunrise[0]
+        sunriseMin = sunrise[1]
+        sunsetHour = sunset[0]
+        sunsetMin = sunset[1]
+
+        sunriseHour = int(sunriseHour)
+        sunriseMin = int(sunriseMin)
+
+        sunsetHour = int(sunsetHour)
+        sunsetMin = int(sunsetMin)
+
+        l = [lat, lng, sunriseHour, sunriseMin, sunsetHour, sunsetMin]
+        l = enumerate(l, 1)
+        l = list(l)
+        varType = "KONUM"
+
+        return l
+
+    elif indexx == 4:
+        global currency
+
+        while True:
+            inTurkey = input("\nBulunduğunuz ülke Türkiye mi? (E = EVET/ H = HAYIR):\t")
+            currency = []
+            if inTurkey == "e" or inTurkey == "E":
+                options = Options()
+                options.add_argument('--headless')
+                driver = webdriver.Chrome(options=options)
+                driver.get("https://www.foreks.com/doviz/serbest-piyasa-doviz")
+                driver.implicitly_wait(8)
+                pound = driver.find_element(By.XPATH, '//*[@id="definitionsTable"]/tr[3]/td[2]/div')
+                pound = pound.text
+
+                pound = pound.replace(',', '')
+
+                for num in pound:
+                    currency1.append(num)
+
+                i = 0
+                while len(currency) < 12:
+                    indexx1 = i % 6
+
+                    currency.append(currency1[indexx1])
+                    i += 1
+
+                currency = ''.join(str(i) for i in currency)
+                currency = int(currency)
+                DigitTheCurency(currency)
+
+                l = [a1, a2, a3, a4, a5, a6]
+                l = enumerate(l,1)
+                l = list(l)
+
+                break
+
+            elif inTurkey == "h" or inTurkey == "H":
+                currency = []
+                country = input("\nBulunduğunuz ülkeyi giriniz:\t")
+                options = Options()
+                options.add_argument('--headless')
+                driver = webdriver.Chrome(options=options)
+                driver.get("https://www.google.com.tr")
+                driver.implicitly_wait(4)
+                s = driver.find_element(By.NAME, 'q')
+                s.send_keys("{} para birimi".format(country))
+                s.send_keys(Keys.ENTER)
+                driver.implicitly_wait(4)
+                curency = driver.find_element(By.XPATH,
+                                              '//*[@id="rso"]/div[1]/block-component/div/div[1]/div[1]/div/div/div/div[1]/div/div/div[2]/div/div/div/div[1]').text
+                s = driver.find_element(By.NAME, 'q')
+                s.clear()
+                s.send_keys("1 {} kaç tl".format(curency))
+                s.send_keys(Keys.ENTER)
+                driver.implicitly_wait(6)
+                currencyVal = driver.find_element(By.XPATH,
+                                                  '//*[@id="knowledge-currency__updatable-data-column"]/div[1]/div[2]/span[1]').text
+                currencyVal = currencyVal.replace(',', '')
+
+                for num in currencyVal:
+                    currency3.append(num)
+
+                i = 0
+                while len(currency) < 12:
+                    indexx1 = i % 4
+
+                    currency.append(currency3[indexx1])
+                    i += 1
+
+                currency = ''.join(str(i) for i in currency)
+                currency = int(currency)
+                DigitTheCurency(currency)
+
+                l = [a1, a2, a3, a4, a5, a6]
+                l = enumerate(l,1)
+                l = list(l)
+                break
+            else:
+                print("\nLütfen geçerli bir cevap giriniz!!!\n")
+
+        varType = "FİNANSAL"
+        return l
+
+    elif indexx == 5:
+        global population
+
+        options = Options()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://www.worldometers.info/world-population/")
+        driver.implicitly_wait(6)
+        population = driver.find_element(By.XPATH, '//*[@id="maincounter-wrap"]/div').text
+        population = population.replace(',', ' ')
+        population = population.split()
+        population = ''.join(population[i] for i in range(2, 4))
+        population = int(population)
+
+        varType = "NÜFUS"
+        l = [population, population, population, population, population, population]
+        l = enumerate(l,1)
+        l = list(l)
+        return l
+
+    else:
+        global dayDuration
+        global euro
+
+        city = input("\nLütfen bulunduğunuz ili giriniz:\t")
+
+        time1 = time.localtime()
+        second = time1.tm_sec
+        minute = time1.tm_min
+        options = Options()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://www.google.com")
+        driver.implicitly_wait(4)
+        s = driver.find_element(By.NAME, 'q')
+        s.send_keys("{} gün doğumu".format(city))
+        s.send_keys(Keys.ENTER)
+        driver.implicitly_wait(4)
+        sunrise = driver.find_element(By.XPATH,
+                                    '//*[@id="rso"]/div[1]/div/div/div[1]/w-answer/w-answer-desktop/div[1]').text
+        sunrise = sunrise.replace(':', ' ')
+        sunrise = sunrise.split()
+        sunriseToMin = (int(sunrise[0]) * 60) + int(sunrise[1])
+
+        s = driver.find_element(By.NAME, 'q')
+        s.clear()
+        s.send_keys("{} gün batımı".format(city))
+        s.send_keys(Keys.ENTER)
+        driver.implicitly_wait(4)
+        sunset = driver.find_element(By.XPATH,
+                                   '//*[@id="rso"]/div[1]/div/div/div[1]/w-answer/w-answer-desktop/div[1]').text
+        sunset = sunset.replace(':', ' ')
+        sunset = sunset.split()
+        sunsetToMin = (int(sunset[0]) * 60) + int(sunset[1])
+
+        dayDuration = sunsetToMin - sunriseToMin
+
+        # Anlık Hava sıcaklığı
+        s = driver.find_element(By.NAME, 'q')
+        s.clear()
+        s.send_keys("{} sıcaklık".format(city))
+        s.send_keys(Keys.ENTER)
+        driver.implicitly_wait(4)
+        temperature = driver.find_element(By.XPATH, '//*[@id="wob_tm"]').text
+        temperature = int(temperature)
+
+        # Euro Kuru
+        driver.get("https://www.google.com")
+        driver.implicitly_wait(10)
+        s = driver.find_element(By.NAME, 'q')
+        time.sleep(1)
+        s.send_keys("1 euro kaç tl")
+        s.send_keys(Keys.ENTER)
+        driver.implicitly_wait(4)
+        euro = driver.find_element(By.XPATH, '//*[@id="knowledge-currency__updatable-data-column"]/div[1]/div[2]/span[1]').text
+
+        euro = euro.replace(',', '.')
+        euro = float(euro)
+        euro = round(euro)
+
+        # Dünya nüfusu
+        driver.get("https://www.worldometers.info/world-population/")
+        driver.implicitly_wait(6)
+        population = driver.find_element(By.XPATH, '//*[@id="maincounter-wrap"]/div').text
+        population = population.replace(',', '')
+        population = int(population)
+
+        varType = "KARMA"
+        l = [second, minute, dayDuration, temperature, euro, population]
+        l = enumerate(l,1)
+        l = list(l)
+        return l
+
+while True:  # (+)
+    answer = input("""Hangi işlemi yapmak istiyorsunuz?\n
  1. ŞİFRELEME (Normal metni şifrelenmiş metne çevirme)
  2. DEŞİFRELEME (Şifrelenmiş metni normal metne çevirme)\n
  Lütfen yapmak istediğiniz işlemin başındaki numarayı yazınız.\n
 Seçiminiz? (1/2) (Çıkmak için q ve ardından ENTER'a basınız):\t""")
 
-    if answer!="1" and answer!="2" and answer!="q" and answer!="Q": 
+    if answer != "1" and answer != "2" and answer != "q" and answer != "Q":
         print("\nLütfen geçerli bir seçim yapınız!\n")
 
     else:
         break
 
-if answer=="1": #Şifreleme
-    
-    msg=input("\nMetni giriniz:\t")
+if answer == "1":  # Şifreleme
+
+    msg = input("\nMetni giriniz:\t")
 
     while True:
-        keyNo1=input("Anahtar sayıyı giriniz:\t")
-        keyNo=int(keyNo1)
+        keyNo1 = input("Anahtar sayıyı giriniz:\t")
+        keyNo = int(keyNo1)
 
         DigitTheNum(keyNo)
-        
-        if len(keyNo1)!=6:
+
+        if len(keyNo1) != 6:
             print("\nAnahtar sayı 6 basamaklı olmalıdır!\n")
 
-        elif d1==d2 or d1==d3 or d1==d4 or d1==d5 or d1==d6 or d2==d3 or d2==d4 or d2==d5 or d2==d6 or d3==d4 or d3==d5 or d3==d6 or d4==d5 or d4==d6 or d5==d6:
+        elif d1 == d2 or d1 == d3 or d1 == d4 or d1 == d5 or d1 == d6 or d2 == d3 or d2 == d4 or d2 == d5 or d2 == d6 or d3 == d4 or d3 == d5 or d3 == d6 or d4 == d5 or d4 == d6 or d5 == d6:
             print("\nAnahtar sayının rakamları birbirinden farklı olmalıdır!\n")
-        
-        elif d1<1 or d1>6 or d2<1 or d2>6 or d3<1 or d3>6 or d4<1 or d4>6 or d5<1 or d5>6 or d6<1 or d6>6:
+
+        elif d1 < 1 or d1 > 6 or d2 < 1 or d2 > 6 or d3 < 1 or d3 > 6 or d4 < 1 or d4 > 6 or d5 < 1 or d5 > 6 or d6 < 1 or d6 > 6:
             print("\nAnahtar sayı 1,2,3,4,5 ve 6 rakamlarından oluşmalıdır!\n")
-            
+
         else:
             break
-    #1.Şifreleme Aşaması Başlangıcı  
-    time1=time.localtime()
-    year=time1.tm_year
-    month=time1.tm_mon
-    day=time1.tm_mday
-    hour=time1.tm_hour
-    minute=time1.tm_min
-    second=time1.tm_sec
 
-    if d1==1: 
-        shift=year%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d1==2:
-        shift=year%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d1==3:
-        shift=year%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d1==4:
-        shift=year%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
+    #1.Şifreleme Aşaması Başlangıcı
+    l = TakeADynVariable()
 
-    elif d1==5:
-        shift=year%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=year%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
-
-    
-    if d2==1:
-        shift=month%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d2==2:
-        shift=month%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d2==3:
-        shift=month%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d2==4:
-        shift=month%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
-        
-
-    elif d2==5:
-        shift=month%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=month%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
-
-
-    if d3==1:
-        shift=day%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d3==2:
-        shift=day%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d3==3:
-        shift=day%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d3==4:
-        shift=day%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
-
-    elif d3==5:
-        shift=day%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=day%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
-
-
-    if d4==1:
-        shift=hour%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d4==2:
-        shift=hour%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d4==3:
-        shift=hour%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d4==4:
-        shift=hour%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
-
-    elif d4==5:
-        shift=hour%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=hour%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
-
-
-    if d5==1:
-        shift=minute%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d5==2:
-        shift=minute%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d5==3:
-        shift=minute%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d5==4:
-        shift=minute%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
-
-    elif d5==5:
-        shift=minute%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=minute%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
-
-
-    if d6==1:
-        shift=second%8
-        #upperVowels + shift
-        newUpperVowels1=collections.deque(upperVowels)
-        newUpperVowels1.rotate(-shift)
-        newUpperVowels=list(newUpperVowels1)
-        
-    elif d6==2:
-        shift=second%8
-        #lowerVowels + shift
-        newLowerVowels1=collections.deque(lowerVowels)
-        newLowerVowels1.rotate(-shift)
-        newLowerVowels=list(newLowerVowels1)
-        
-    elif d6==3:
-        shift=second%21
-        #upperConsons + shift
-        newUpperConsons1=collections.deque(upperConsons)
-        newUpperConsons1.rotate(-shift)
-        newUpperConsons=list(newUpperConsons1)
-        
-    elif d6==4:
-        shift=second%21
-        #lowerConsons + shift
-        newLowerConsons1=collections.deque(lowerConsons)
-        newLowerConsons1.rotate(-shift)
-        newLowerConsons=list(newLowerConsons1)
-        
-
-    elif d6==5:
-        shift=second%10
-        #nums + shift
-        newNums1=collections.deque(nums)
-        newNums1.rotate(-shift)
-        newNums=list(newNums1)
-        
-    else:
-        shift=second%26
-        #signs + shift
-        newSigns1=collections.deque(signs)
-        newSigns1.rotate(-shift)
-        newSigns=list(newSigns1)
+    #Karakter gruplarının listelerini kaydırma(+)
+    i = 0
+    for c in keyNo1:
+        c = int(c)
+        i += 1
+        for a,b in charGroups:
+            if a == c:
+                for x,y in l:
+                    if x == i:
+                        shift = y % len(b)
+                        d = collections.deque(b)
+                        d.rotate(-shift)
+                        newCharGroups.append(list(d))
 
     for letter in msg:
+        for a, b in charGroups:
+            if letter in b:
+                for i in newCharGroups:
+                    if letter in i:
+                        encrypt1.append(i[b.index(letter)])
 
-        if letter in upperVowels:
-            encrypt1.append(newUpperVowels[upperVowels.index(letter)])
-            
-        elif letter in lowerVowels:
-            encrypt1.append(newLowerVowels[lowerVowels.index(letter)])
-            
+        if letter == " ":
+            encrypt1.append(letter)
 
-        elif letter in upperConsons:
-            encrypt1.append(newUpperConsons[upperConsons.index(letter)])
-            
+    #1.Şifreleme Aşaması Sonu(+)
 
-        elif letter in lowerConsons:
-            encrypt1.append(newLowerConsons[lowerConsons.index(letter)])
+    #2. Şifreleme Aşaması Başlangıcı (AMELEYİM AMELE!!!)
+    for a in encrypt1:
+        #Büyük Sessiz Harfler
+        if a == "B":
+            encrypt2.append("Ş")
+        if a == "C":
+            encrypt2.append("Y")
+        if a == "Ç":
+            encrypt2.append("Ð")
+        if a == "D":
+            encrypt2.append("Ç")
+        if a == "F":
+            encrypt2.append("K")
+        if a == "G":
+            encrypt2.append("N")
+        if a == "Ğ":
+            encrypt2.append("®")
+        if a == "H":
+            encrypt2.append("T")
+        if a == "J":
+            encrypt2.append("D")
+        if a == "K":
+            encrypt2.append("Ğ")
+        if a == "L":
+            encrypt2.append("M")
+        if a == "M":
+            encrypt2.append("R")
+        if a == "N":
+            encrypt2.append("V")
+        if a == "P":
+            encrypt2.append("F")
+        if a == "R":
+            encrypt2.append("J")
+        if a == "S":
+            encrypt2.append("H")
+        if a == "Ş":
+            encrypt2.append("Ú")
+        if a == "T":
+            encrypt2.append("P")
+        if a == "V":
+            encrypt2.append("L")
+        if a == "Y":
+            encrypt2.append("S")
+        if a == "Z":
+            encrypt2.append("B")
 
-        elif letter in nums:
-            encrypt1.append(newNums[nums.index(letter)])
+        #Büyük Sesli Harfler
+        if a == "A":
+            encrypt2.append("O")
+        if a == "E":
+            encrypt2.append("Ö")
+        if a == "I":
+            encrypt2.append("A")
+        if a == "İ":
+            encrypt2.append("▒")
+        if a == "O":
+            encrypt2.append("I")
+        if a == "Ö":
+            encrypt2.append("Ó")
+        if a == "U":
+            encrypt2.append("U")
+        if a == "Ü":
+            encrypt2.append("µ")
 
-        elif letter in signs:
-            encrypt1.append(newSigns[signs.index(letter)])
-        
-        else:
-            encrypt1.append("(NULL)")
+        #Küçük Sesli Harfler
+        if a == "a":
+            encrypt2.append("ü")
+        if a == "e":
+            encrypt2.append("i")
+        if a == "ı":
+            encrypt2.append("▓")
+        if a == "i":
+            encrypt2.append("ö")
+        if a == "o":
+            encrypt2.append("u")
+        if a == "ö":
+            encrypt2.append("ï")
+        if a == "u":
+            encrypt2.append("o")
+        if a == "ü":
+            encrypt2.append("æ")
 
-        #1.Şifreleme Aşaması Sonu(+)
+        #Küçük Sessiz Harfler
+        if a == "b":
+            encrypt2.append("z")
+        if a == "c":
+            encrypt2.append("c")
+        if a == "ç":
+            encrypt2.append("±")
+        if a == "d":
+            encrypt2.append("j")
+        if a == "f":
+            encrypt2.append("m")
+        if a == "g":
+            encrypt2.append("y")
+        if a == "ğ":
+            encrypt2.append("¬")
+        if a == "h":
+            encrypt2.append("l")
+        if a == "j":
+            encrypt2.append("f")
+        if a == "k":
+            encrypt2.append("g")
+        if a == "l":
+            encrypt2.append("r")
+        if a == "m":
+            encrypt2.append("ş")
+        if a == "n":
+            encrypt2.append("h")
+        if a == "p":
+            encrypt2.append("p")
+        if a == "r":
+            encrypt2.append("k")
+        if a == "s":
+            encrypt2.append("d")
+        if a == "ş":
+            encrypt2.append("Û")
+        if a == "t":
+            encrypt2.append("s")
+        if a == "v":
+            encrypt2.append("v")
+        if a == "y":
+            encrypt2.append("â")
+        if a == "z":
+            encrypt2.append("ä")
 
-    #2.Şifreleme Aşaması Başlangıcı
-    i=0
-    for j in encrypt1:
-        encrypt1[i]=ord(encrypt1[i])
-        i+=1
+        #Rakamlar
+        if a == "0":
+            encrypt2.append("2")
+        if a == "1":
+            encrypt2.append("7")
+        if a == "2":
+            encrypt2.append("1")
+        if a == "3":
+            encrypt2.append("5")
+        if a == "4":
+            encrypt2.append("6")
+        if a == "5":
+            encrypt2.append("9")
+        if a == "6":
+            encrypt2.append("4")
+        if a == "7":
+            encrypt2.append("0")
+        if a == "8":
+            encrypt2.append("3")
+        if a == "9":
+            encrypt2.append("8")
 
-    i=0
-    for j in encrypt1:
-        encrypt1[i]=(encrypt1[i]%103)+1
-        i+=1
+        #Simgeler
+        if a == "+":
+            encrypt2.append("?")
+        if a == "x":
+            encrypt2.append("é")
+        if a == "÷":
+            encrypt2.append("ò")
+        if a == "=":
+            encrypt2.append("*")
+        if a == "%":
+            encrypt2.append("-")
+        if a == "/":
+            encrypt2.append("/")
+        if a == "\\":
+            encrypt2.append(".")
+        if a == "$":
+            encrypt2.append("ƒ")
+        if a == "ƒ":
+            encrypt2.append("│")
+        if a == "£":
+            encrypt2.append("ª")
+        if a == "@":
+            encrypt2.append("@")
+        if a == "*":
+            encrypt2.append("÷")
+        if a == "!":
+            encrypt2.append("\"")
+        if a == "#":
+            encrypt2.append("\\")
+        if a == ":":
+            encrypt2.append(",")
+        if a == ";":
+            encrypt2.append("+")
+        if a == "&":
+            encrypt2.append("#")
+        if a == "-":
+            encrypt2.append(")")
+        if a == "(":
+            encrypt2.append("x")
+        if a == ")":
+            encrypt2.append("$")
+        if a == "_":
+            encrypt2.append("=")
+        if a == "'":
+            encrypt2.append(":")
+        if a == "\"":
+            encrypt2.append("£")
+        if a == ".":
+            encrypt2.append(")")
+        if a == ",":
+            encrypt2.append(";")
+        if a == "?":
+            encrypt2.append("'")
+        if a == " ":
+            encrypt2.append(" ")
+        #2. Şifreleme Aşaması Sonu (-)
+        #Algoritmik hata yok
 
-    for j in encrypt1:
-        e=element(j)
-        w=round(e.atomic_weight)
 
-        for ir in e.ionic_radii:
-            charges.append(ir.charge)
-
-        c=Counter(charges).most_common(1)[0][0]
-
-        encrypt2.append(w)
-        encrypt2.append(c)
-    #2.Şifreleme Aşaması Sonu(+)
-
-    #3.Şifreleme Aşaması Başlangıcı
-    for i in range(0,len(encrypt2),2):
-        if encrypt2[i]%128<=31 and encrypt2[i]%128>=0:
-            encrypt3.append(encrypt2[i]%128)
-
-        elif encrypt2[i]%128==127:
-            encrypt3.append("Γ")
-
-        else:
-            encrypt3.append(chr(encrypt2[i]%128))
-
-    for i in range(1,len(encrypt2),2):
-        if encrypt2[i]<0:
-            encrypt3.insert(i,"β{}".format(encrypt2[i]))
-
-        elif encrypt2[i]==0:
-            encrypt3.insert(i,"µ")
-
-        else:
-            encrypt3.insert(i,"α{}".format(encrypt2[i]))
-
-    #3.Şifreleme Aşaması Sonu(+)
-
-    #Anahtar Şifreleme Aşaması Başlangıcı
+    # Anahtar Şifreleme Aşaması Başlangıcı
     DigitTheKey(keyNo)
-    
-    while(num1!=0):
 
-        for i in range(10,-1,-1):
-            if triangularNumbers[i]<=num1:
-                index1.append(i)
-                num1-=triangularNumbers[i]
-                i-=1
-        
-        if num1!=0:
-            index1.append("(00)")
-            
-            for i in range(0,11,1):
-                if triangularNumbers[i]<=num1:
-                    index1.append(i)
-                    num1-=triangularNumbers[i]
-                    i+=1
-    
-    #Anahtar Şifreleme Aşaması TAMAMLANMADI!
+    while num1 != 0:
+        for i in range(10, -1, -1):
+            if triangularNumbers[i] <= num1:
+                num1 -= triangularNumbers[i]
+                encryptedKey1.append(1)
 
-                    
-    #Şifrelenmiş Metnin Ekrana Yazdırılması
-    print("\nŞifrelenmiş metin:\t{}\n\nAnahtar:\t{}\n".format("".join(str(i) for i in encrypt3),keyNo))
-    print("\n\nŞifrelenen veri grubu adı : ZAMAN\nŞifrelenme tarihi: {}.{}.{}   {}:{}:{}\n".format(day,month,year,hour,minute,second))
+            else:
+                encryptedKey1.append(0)
+
+        if num1 != 0:
+            encryptedKey1.append("(00)")
+            for i in range(0, 11, 1):
+                if triangularNumbers[i] <= num1:
+                    num1 -= triangularNumbers[i]
+                    encryptedKey1.append(1)
+
+                else:
+                    encryptedKey1.append(0)
+
+    encryptedKey1 = ''.join(str(i) for i in encryptedKey1)
+
+    while encryptedKey1[len(encryptedKey1) - 1] == "0":
+        encryptedKey1 = encryptedKey1[:-1]
+
+    encryptedKey1 += str("/")
+
+    while num2 != 0:
+        for i in range(10, -1, -1):
+            if triangularNumbers[i] <= num2:
+                num2 -= triangularNumbers[i]
+                encryptedKey2.append(1)
+
+            else:
+                encryptedKey2.append(0)
+
+        if num2 != 0:
+            encryptedKey2.append("(00)")
+            for i in range(0, 11, 1):
+                if triangularNumbers[i] <= num2:
+                    num2 -= triangularNumbers[i]
+                    encryptedKey2.append(1)
+
+                else:
+                    encryptedKey2.append(0)
+
+    encryptedKey2 = ''.join(str(i) for i in encryptedKey2)
+
+    while encryptedKey2[len(encryptedKey2) - 1] == "0":
+        encryptedKey2 = encryptedKey2[:-1]
+
+    encryptedKey2 += str("/")
+
+    while num3 != 0:
+        for i in range(10, -1, -1):
+            if triangularNumbers[i] <= num3:
+                num3 -= triangularNumbers[i]
+                encryptedKey3.append(1)
+
+            else:
+                encryptedKey3.append(0)
+
+        if num3 != 0:
+            encryptedKey3.append("(00)")
+            for i in range(0, 11, 1):
+                if triangularNumbers[i] <= num3:
+                    num3 -= triangularNumbers[i]
+                    encryptedKey3.append(1)
+
+                else:
+                    encryptedKey3.append(0)
+
+    encryptedKey3 = ''.join(str(i) for i in encryptedKey3)
+
+    while encryptedKey3[len(encryptedKey3) - 1] == "0":
+        encryptedKey3 = encryptedKey3[:-1]
+
+    encryptedKey = str(encryptedKey1) + str(encryptedKey2) + str(encryptedKey3)
+
+    # Anahtar Şifreleme Aşaması Sonu(+)
+
+    # Şifrelenmiş Metnin Ekrana Yazdırılması
+    print("\nŞifrelenmiş metin:\t{}\n\nAnahtar:\t{}\n".format("".join(str(i) for i in encrypt2), encryptedKey))
+    print(
+        "\n\nŞifrelenen veri grubu adı : {}\n".format(varType))
+    print("Sayılar: ")
+    for a,b in l:
+        print(b)
+
     time.sleep(5)
-            
-elif answer=="2": #Deşifreleme
-    
-    msg=input("\nMetni giriniz:\t")
-    keyNo=int(input("Anahtar sayıyı giriniz:\t"))
 
-    
-else: #Çıkış
+elif answer == "2":  # Deşifreleme
+
+    msg = input("\nMetni giriniz:\t")
+    keyNo = input("Anahtar sayıyı giriniz:\t")
+    varType = input("\nVeri grubunun adını giriniz:\t")
+    par1 = int(input("\n 1.Veriyi giriniz:\t"))
+    par2 = int(input("2.Veriyi giriniz:\t"))
+    par3 = int(input("3.Veriyi giriniz:\t"))
+    par4 = int(input("4.Veriyi giriniz:\t"))
+    par5 = int(input("5.Veriyi giriniz:\t"))
+    par6 = int(input("6.Veriyi giriniz:\t"))
+
+    l = [par1, par2, par3, par4, par5, par6]
+    l = enumerate(l,1)
+    l = list(l)
+
+    #Anahtarın deşifrelenmesi
+    keyNo = keyNo.replace('/', ' ')
+    keyNo = keyNo.replace('(00)', '/')
+    keyNo = keyNo.split()
+
+    num1 = keyNo[0]
+    num2 = keyNo[1]
+    num3 = keyNo[2]
+
+    a = 0
+    for i in num1:
+        if i == "1":
+            num += triangularNumbers[10 - a]
+            a += 1
+
+        elif i == "/":
+            triangularNumbers.reverse()
+            a = 0
+
+        else:
+            a += 1
+
+    num1 = num
+
+    num = 0
+    a = 0
+    for i in num2:
+        if i == "1":
+            num += triangularNumbers[a]
+            a += 1
+
+        elif i == "/":
+            triangularNumbers.reverse()
+            a = 0
+
+        else:
+            a += 1
+
+    num2 = num
+
+    num = 0
+    a = 0
+    for i in num3:
+        if i == "1":
+            num += triangularNumbers[a]
+            a += 1
+
+        elif i == "/":
+            triangularNumbers.reverse()
+            a = 0
+
+        else:
+            a += 1
+
+    num3 = num
+
+    decryptedKey = str(num1) + str(num2) + str(num3)
+    #Anahtarın Deşifrelenmesi Sonu(+)
+
+    encrypt2 = []
+    #1. Deşifreleme Aşaması Başlangıcı
+    for a in msg:
+        # Büyük Sessiz Harfler
+        if a == "Ş":
+            encrypt2.append("B")
+        if a == "Y":
+            encrypt2.append("C")
+        if a == "Ð":
+            encrypt2.append("Ç")
+        if a == "Ç":
+            encrypt2.append("D")
+        if a == "K":
+            encrypt2.append("F")
+        if a == "N":
+            encrypt2.append("G")
+        if a == "®":
+            encrypt2.append("Ğ")
+        if a == "T":
+            encrypt2.append("H")
+        if a == "D":
+            encrypt2.append("J")
+        if a == "Ğ":
+            encrypt2.append("K")
+        if a == "M":
+            encrypt2.append("L")
+        if a == "R":
+            encrypt2.append("M")
+        if a == "V":
+            encrypt2.append("N")
+        if a == "F":
+            encrypt2.append("P")
+        if a == "J":
+            encrypt2.append("R")
+        if a == "H":
+            encrypt2.append("S")
+        if a == "Ú":
+            encrypt2.append("Ş")
+        if a == "P":
+            encrypt2.append("T")
+        if a == "L":
+            encrypt2.append("V")
+        if a == "S":
+            encrypt2.append("Y")
+        if a == "B":
+            encrypt2.append("Z")
+
+        # Büyük Sesli Harfler
+        if a == "O":
+            encrypt2.append("A")
+        if a == "Ö":
+            encrypt2.append("E")
+        if a == "A":
+            encrypt2.append("I")
+        if a == "▒":
+            encrypt2.append("İ")
+        if a == "I":
+            encrypt2.append("O")
+        if a == "Ó":
+            encrypt2.append("Ö")
+        if a == "U":
+            encrypt2.append("U")
+        if a == "µ":
+            encrypt2.append("Ü")
+
+        # Küçük Sesli Harfler
+        if a == "ü":
+            encrypt2.append("a")
+        if a == "i":
+            encrypt2.append("e")
+        if a == "▓":
+            encrypt2.append("ı")
+        if a == "ö":
+            encrypt2.append("i")
+        if a == "u":
+            encrypt2.append("o")
+        if a == "ï":
+            encrypt2.append("ö")
+        if a == "o":
+            encrypt2.append("u")
+        if a == "æ":
+            encrypt2.append("ü")
+
+        # Küçük Sessiz Harfler
+        if a == "z":
+            encrypt2.append("b")
+        if a == "c":
+            encrypt2.append("c")
+        if a == "±":
+            encrypt2.append("ç")
+        if a == "j":
+            encrypt2.append("d")
+        if a == "m":
+            encrypt2.append("f")
+        if a == "y":
+            encrypt2.append("g")
+        if a == "¬":
+            encrypt2.append("ğ")
+        if a == "l":
+            encrypt2.append("h")
+        if a == "f":
+            encrypt2.append("j")
+        if a == "g":
+            encrypt2.append("k")
+        if a == "r":
+            encrypt2.append("l")
+        if a == "ş":
+            encrypt2.append("m")
+        if a == "h":
+            encrypt2.append("n")
+        if a == "p":
+            encrypt2.append("p")
+        if a == "k":
+            encrypt2.append("r")
+        if a == "d":
+            encrypt2.append("s")
+        if a == "Û":
+            encrypt2.append("ş")
+        if a == "s":
+            encrypt2.append("t")
+        if a == "v":
+            encrypt2.append("v")
+        if a == "â":
+            encrypt2.append("y")
+        if a == "ä":
+            encrypt2.append("z")
+
+        # Rakamlar
+        if a == "2":
+            encrypt2.append("0")
+        if a == "7":
+            encrypt2.append("1")
+        if a == "1":
+            encrypt2.append("2")
+        if a == "5":
+            encrypt2.append("3")
+        if a == "6":
+            encrypt2.append("4")
+        if a == "9":
+            encrypt2.append("5")
+        if a == "4":
+            encrypt2.append("6")
+        if a == "0":
+            encrypt2.append("7")
+        if a == "3":
+            encrypt2.append("8")
+        if a == "8":
+            encrypt2.append("9")
+
+        # Simgeler
+        if a == "?":
+            encrypt2.append("+")
+        if a == "é":
+            encrypt2.append("x")
+        if a == "ò":
+            encrypt2.append("÷")
+        if a == "*":
+            encrypt2.append("=")
+        if a == "-":
+            encrypt2.append("%")
+        if a == "/":
+            encrypt2.append("/")
+        if a == ".":
+            encrypt2.append("\\")
+        if a == "ƒ":
+            encrypt2.append("$")
+        if a == "│":
+            encrypt2.append("ƒ")
+        if a == "ª":
+            encrypt2.append("£")
+        if a == "@":
+            encrypt2.append("@")
+        if a == "÷":
+            encrypt2.append("*")
+        if a == "\"":
+            encrypt2.append("!")
+        if a == "\\":
+            encrypt2.append("#")
+        if a == ",":
+            encrypt2.append(":")
+        if a == "+":
+            encrypt2.append(";")
+        if a == "#":
+            encrypt2.append("&")
+        if a == ")":
+            encrypt2.append("-")
+        if a == "x":
+            encrypt2.append("(")
+        if a == "$":
+            encrypt2.append(")")
+        if a == "=":
+            encrypt2.append("_")
+        if a == ":":
+            encrypt2.append("'")
+        if a == "£":
+            encrypt2.append("\"")
+        if a == ")":
+            encrypt2.append(".")
+        if a == ";":
+            encrypt2.append(",")
+        if a == "'":
+            encrypt2.append("?")
+        if a == " ":
+            encrypt2.append(" ")
+        #1. Deşifre Aşaması Sonu (+)
+
+    #2. Deşifreleme Aşaması Başlangıcı
+    i = 0
+    for n in decryptedKey:
+        n = int(n)
+        i += 1
+        for a,b in charGroups:
+            if a == n:
+                for x,y in l:
+                    if x == i:
+                        shift = y % len(b)
+                        d = collections.deque(b)
+                        d.rotate(shift)
+                        d = list(d)
+                        newCharGroups.append(d)
+
+    for letter in encrypt2:
+        for a,b in charGroups:
+            if letter in b:
+                for i in newCharGroups:
+                    if letter in i:
+                        encrypt1.append(i[b.index(letter)])
+
+    decryptedText = ''.join(str(i) for i in encrypt1)
+    #2.Deşifreleme Aşaması Sonu(-)
+
+    print("\nDeşifrelenmiş metin: {}".format(decryptedText))
+    time.sleep(5)
+
+else:  # Çıkış
     print("\nÇıkılıyor...")
     time.sleep(2)
     sys.exit()
-    
+
 
